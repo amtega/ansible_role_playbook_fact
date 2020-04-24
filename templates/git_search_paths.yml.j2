@@ -1,0 +1,8 @@
+{% set ns = namespace(path="", result=[]) %}
+{% for c in playbook_dir.split("/") %}
+{% if c | length > 0 %}
+  {% set ns.path = ns.path + "/" + c %}
+  {% set ns.result = ns.result + [ns.path] %}
+{% endif %}
+{% endfor %}
+{{ ns.result | reverse | list | to_json }}

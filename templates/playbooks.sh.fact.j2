@@ -1,0 +1,13 @@
+#!/bin/bash
+{{ ansible_managed | comment }}
+
+PLAYBOOK_FACT_BASE_DIR={{ playbook_fact_dir }}
+
+if [ -d $PLAYBOOK_FACT_BASE_DIR ]; then
+  facts=$(find $PLAYBOOK_FACT_BASE_DIR -type f -name "*.fact" -exec cat \{} \;)
+  echo "["
+  echo $facts | sed "s/  / /g" | sed "s/} {/},\n{/g"
+  echo "]"
+else
+  echo "[]"
+fi
