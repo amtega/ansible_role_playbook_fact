@@ -60,7 +60,7 @@
         dest: "{{ playbook_fact_file_path }}"
         owner: root
         group: root
-        mode: 0640
+        mode: 0644
 
   vars:
     playbook_fact_git_project_path: >-
