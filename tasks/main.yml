@@ -11,7 +11,7 @@
         {{ lookup("template", "git_search_paths.yml.j2") | from_yaml }}
       loop_control:
         loop_var: playbook_fact_git_search_path_item
-      delegate_to: localhost
+      delegate_to: "{{ playbook_fact_ansible_control_host }}"
 
     - name: Get git repository version
       command: git describe --tags
@@ -22,7 +22,7 @@
       changed_when: no
       vars:
         chdir: "{{ playbook_fact_git_project_path }}"
-      delegate_to: localhost
+      delegate_to: "{{ playbook_fact_ansible_control_host }}"
 
     - name: Setup playbook fact
       set_fact:
