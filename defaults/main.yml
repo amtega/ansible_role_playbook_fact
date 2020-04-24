@@ -4,7 +4,3 @@
 # Dict with additional fields to add to the playbook fact.
 
 playbook_fact_extra: {}
-
-# Ansible control machine
-
-playbook_fact_ansible_control_host: localhost
