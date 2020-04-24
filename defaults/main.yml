@@ -1,2 +1,6 @@
 ---
 # Role default lower priority variables
+
+# Dict with additional fields to add to the playbook fact.
+
+playbook_fact_extra: {}

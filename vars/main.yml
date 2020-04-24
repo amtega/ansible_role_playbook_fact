@@ -1,2 +1,11 @@
 ---
 # Role variables
+
+playbook_fact_d_dir: /etc/ansible/facts.d
+
+playbook_fact_dir: "{{ playbook_fact_d_dir }}/playbooks"
+
+playbook_fact_project_dir: "{{ playbook_fact_dir }}/{{ playbook.project }}"
+
+playbook_fact_file_path: >-
+  {{ playbook_fact_project_dir }}/{{ playbook.file }}.fact

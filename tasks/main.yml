@@ -1,2 +1,74 @@
 ---
 # Role tasks
+
+- block:
+    - name: Seach git repository
+      stat:
+        path: "{{ playbook_fact_git_search_path_item }}/.git"
+      register: playbook_fact_search_git_result
+      when: not playbook_fact_search_git_result.stat.exists | default(false)
+      loop: >-
+        {{ lookup("template", "git_search_paths.yml.j2") | from_yaml }}
+      loop_control:
+        loop_var: playbook_fact_git_search_path_item
+      delegate_to: localhost
+
+    - name: Get git repository version
+      command: git describe --tags
+      args:
+        warn: no
+      register: playbook_fact_get_version_result
+      failed_when: no
+      changed_when: no
+      vars:
+        chdir: "{{ playbook_fact_git_project_path }}"
+      delegate_to: localhost
+
+    - name: Setup playbook fact
+      set_fact:
+        playbook: "{{ playbook_fact_base | combine(playbook_fact_extra) }}"
+      vars:
+        playbook_fact_file: >-
+          {{ (lookup("file", "/proc/self/cmdline")
+              | regex_replace("\u0000", "\n")).splitlines()
+             | select("search", ".*\.ya?ml")
+             | list
+             | first
+             | basename }}
+
+        playbook_fact_base:
+          project: "{{ playbook_fact_git_project_path | basename }}"
+          version: >-
+            {{ (playbook_fact_get_version_result.rc == 0)
+               | ternary(playbook_fact_get_version_result.stdout, "") }}
+          file: "{{ playbook_fact_file }}"
+
+    - name: Create local facts directory
+      file:
+        path: "{{ playbook_fact_project_dir }}"
+        state: directory
+
+    - name: Configure main playbooks local fact
+      template:
+        src: playbooks.sh.fact.j2
+        dest: "{{ playbook_fact_d_dir }}/playbooks.fact"
+        mode: 0755
+
+    - name: Configure playbook local fact
+      template:
+        src: playbook.fact.j2
+        dest: "{{ playbook_fact_file_path }}"
+        owner: root
+        group: root
+        mode: 0640
+
+  vars:
+    playbook_fact_git_project_path: >-
+      {{ (playbook_fact_search_git_result.results
+          | selectattr("stat", "defined")
+          | selectattr("stat.exists", "equalto", true)
+          | list
+          | first).stat.path
+         | dirname }}
+  tags:
+    - role::playbook_fact

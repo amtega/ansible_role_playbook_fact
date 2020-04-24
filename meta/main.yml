@@ -2,21 +2,17 @@
 # Role dependencies
 
 galaxy_info:
-  role_name: role
-  author: author name
-  description: role description
+  role_name: playbook_fact
+  author: Juan Antonio Valiño García
+  description: Setup fact with info about the playbook that is running
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
   min_ansible_version: 2.9
   platforms:
-    - name: EL
+    - name: GenericLinux
       versions:
-        - 6
-        - 7
-    - name: Fedora
-      versions:
-        - 29
-        - 30
-  galaxy_tags: []
-
-dependencies: []
+        - all
+  galaxy_tags:
+    - ansible
+    - playbook
+    - fact
