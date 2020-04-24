@@ -17,12 +17,11 @@
     - name: Get git repository version
       command: git describe --tags
       args:
+        chdir: "{{ playbook_fact_git_project_path }}"
         warn: no
       register: playbook_fact_get_version_result
       failed_when: no
       changed_when: no
-      vars:
-        chdir: "{{ playbook_fact_git_project_path }}"
       delegate_to: localhost
       become: no
 
