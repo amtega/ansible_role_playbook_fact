@@ -28,6 +28,8 @@
       delegate_to: localhost
       become: no
 
+    - debug: var=playbook_fact_get_remote_result
+
     - name: Get git repository version
       command: git describe --tags
       args:

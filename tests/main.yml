@@ -58,3 +58,4 @@
       docker_sandbox_state: absent
   tags:
     - sandbox
+    - cleanup
