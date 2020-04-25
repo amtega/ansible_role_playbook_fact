@@ -4,3 +4,9 @@
 # Dict with additional fields to add to the playbook fact.
 
 playbook_fact_extra: {}
+
+# List of git remotes to try for project name search
+
+playbook_fact_remote_list:
+  - upstream
+  - origin

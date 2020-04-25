@@ -14,6 +14,20 @@
       delegate_to: localhost
       become: no
 
+    - name: Get git project name
+      command: "git config --get remote.{{ playbook_fact_remote_item }}.url"
+      args:
+        chdir: "{{ playbook_fact_git_project_path }}"
+        warn: no
+      register: playbook_fact_get_remote_result
+      changed_when: no
+      failed_when: no
+      loop: "{{ playbook_fact_remote_list }}"
+      loop_control:
+        loop_var: playbook_fact_remote_item
+      delegate_to: localhost
+      become: no
+
     - name: Get git repository version
       command: git describe --tags
       args:
@@ -27,22 +41,8 @@
 
     - name: Setup playbook fact
       set_fact:
-        playbook: "{{ playbook_fact_base | combine(playbook_fact_extra) }}"
-      vars:
-        playbook_fact_file: >-
-          {{ (lookup("file", "/proc/self/cmdline")
-              | regex_replace("\u0000", "\n")).splitlines()
-             | select("search", ".*\.ya?ml")
-             | list
-             | first
-             | basename }}
-
-        playbook_fact_base:
-          project: "{{ playbook_fact_git_project_path | basename }}"
-          version: >-
-            {{ (playbook_fact_get_version_result.rc == 0)
-               | ternary(playbook_fact_get_version_result.stdout, "") }}
-          file: "{{ playbook_fact_file }}"
+        playbook_info: >-
+          {{ lookup("template", "playbook_info.fact.j2") | from_yaml }}
 
     - name: Create local facts directory
       file:
@@ -51,13 +51,13 @@
 
     - name: Configure main playbooks local fact
       template:
-        src: playbooks.sh.fact.j2
-        dest: "{{ playbook_fact_d_dir }}/playbooks.fact"
+        src: playbooks_info.sh.fact.j2
+        dest: "{{ playbook_fact_d_dir }}/playbooks_info.fact"
         mode: 0755
 
     - name: Configure playbook local fact
       template:
-        src: playbook.fact.j2
+        src: playbook_info.fact.j2
         dest: "{{ playbook_fact_file_path }}"
         owner: root
         group: root
@@ -71,5 +71,13 @@
           | list
           | first).stat.path
          | dirname }}
+
+    playbook_fact_file: >-
+      {{ (lookup("file", "/proc/self/cmdline")
+          | regex_replace("\u0000", "\n")).splitlines()
+         | select("search", ".*\.ya?ml")
+         | list
+         | first
+         | basename }}
   tags:
     - role::playbook_fact

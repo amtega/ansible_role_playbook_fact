@@ -37,8 +37,8 @@
     - name: Check that facts where setup
       assert:
         that:
-          - playbook is defined
-          - playbook.hello == "World"
+          - playbook_info is defined
+          - playbook_info.hello == "World"
 
     - name: Reload facts
       setup:
@@ -46,8 +46,8 @@
     - name: Check that local facts wher setup
       assert:
         that:
-          - ansible_local.playbooks is defined
-          - ansible_local.playbooks.0.hello == "World"
+          - ansible_local.playbooks_info is defined
+          - ansible_local.playbooks_info.0.hello == "World"
   tags:
     - idempotence
 
