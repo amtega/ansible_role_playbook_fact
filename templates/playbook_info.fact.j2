@@ -8,6 +8,9 @@
                   | basename
                   | splitext
                   | first -%}
+{%- if tower_job_id is defined -%}
+{%- set project = project | regex_replace(".*__(.*)", "\\1") -%}
+{%- endif -%}
 {%- else -%}
 {%- set project = "" -%}
 {%- endif -%}
@@ -16,7 +19,7 @@
                  | ternary(playbook_fact_get_version_result.stdout, "") -%}
 
 {%- set base_fact = { "project": project,
-                     "version": version,
-                     "file": playbook_fact_file } -%}
+                      "version": version,
+                      "file": playbook_fact_file } -%}
 
 {{ base_fact | combine(playbook_fact_extra) | to_nice_json(indent=2) }}
