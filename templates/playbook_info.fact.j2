@@ -1,0 +1,22 @@
+{%- set remote_candidates = playbook_fact_get_remote_result.results
+                           | selectattr("stdout", "defined")
+                           | rejectattr("stdout", "equalto", "")
+                           | list -%}
+{%- if remote_candidates | length > 0 -%}
+{%- set project = (remote_candidates | first).stdout
+                  | urlsplit("path")
+                  | basename
+                  | splitext
+                  | first -%}
+{%- else -%}
+{%- set project = "" -%}
+{%- endif -%}
+
+{%- set version = (playbook_fact_get_version_result.rc == 0)
+                 | ternary(playbook_fact_get_version_result.stdout, "") -%}
+
+{%- set base_fact = { "project": project,
+                     "version": version,
+                     "file": playbook_fact_file } -%}
+
+{{ base_fact | combine(playbook_fact_extra) | to_nice_json(indent=2) }}

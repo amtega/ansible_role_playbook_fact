@@ -9,13 +9,13 @@ A list of all the default variables for this role is available in `defaults/main
 The role setup the following fact:
 
 ```yaml
-playbook:
+playbook_info:
   project: <project>  # The playbook's project
   version: <version>  # Version of the project
   file: <file>        # Playbook file
 ```
 
-Also the role setups a local fact on the servers running the playbook that can be accesed using `ansible_local.playbooks`. This local fact contains a list of dicts with the info about the playbooks ran on the servers.
+Also the role setups a local fact on the servers running the playbook that can be accesed using `ansible_local.playbooks_info`. This local fact contains a list of dicts with the info about the playbooks ran on the servers.
 
 ## Example Playbook
 
