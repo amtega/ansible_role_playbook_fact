@@ -39,6 +39,11 @@
       delegate_to: localhost
       become: no
 
+
+    - name: Get playbook file
+      playbook_fact_get_file:
+      register: playbook_fact_get_file_result
+
     - name: Setup playbook fact
       set_fact:
         playbook_info: >-
@@ -72,12 +77,7 @@
           | first).stat.path
          | dirname }}
 
-    playbook_fact_file: >-
-      {{ (lookup("file", "/proc/self/cmdline")
-          | regex_replace("\u0000", "\n")).splitlines()
-         | select("search", ".*\.ya?ml")
-         | list
-         | first
-         | basename }}
+    playbook_fact_file: "{{ playbook_fact_get_file_result.file | basename }}"
+
   tags:
     - role::playbook_fact
