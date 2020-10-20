@@ -39,7 +39,6 @@
       delegate_to: localhost
       become: no
 
-
     - name: Get playbook file
       playbook_fact_get_file:
       register: playbook_fact_get_file_result
