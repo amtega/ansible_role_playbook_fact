@@ -20,6 +20,8 @@
 
 {%- set base_fact = { "project": project,
                       "version": version,
-                      "file": playbook_fact_file } -%}
+                      "file": playbook_fact_file,
+                      "run_tags": ansible_run_tags | sort,
+                      "skip_tags": ansible_skip_tags | sort } -%}
 
 {{ base_fact | combine(playbook_fact_extra) | to_nice_json(indent=2) }}

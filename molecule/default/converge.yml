@@ -1,0 +1,10 @@
+---
+
+- name: Converge
+  hosts: molecule_hosts
+  gather_facts: no
+  roles:
+    - role: amtega.playbook_fact
+      vars:
+        playbook_fact_extra:
+          hello: World
