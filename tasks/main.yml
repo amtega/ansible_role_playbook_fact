@@ -52,6 +52,7 @@
       file:
         path: "{{ playbook_fact_project_dir }}"
         state: directory
+        mode: 0755
 
     - name: Configure main playbooks local fact
       template:
