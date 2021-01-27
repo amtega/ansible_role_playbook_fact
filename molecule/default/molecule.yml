@@ -1,0 +1,31 @@
+---
+
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: "${MOLECULE_SCENARIO_DIRECTORY}/linters.sh"
+platforms:
+  - name: "centos7-${INSTANCE_UUID:-1}"
+    image: centos:7
+    groups:
+      - molecule_hosts
+      - molecule_hosts_centos
+      - molecule_hosts_centos_7
+provisioner:
+  name: ansible
+  ansible_args:
+    - --skip-tags=molecule-idempotence-notest
+  config_options:
+    defaults:
+      callback_whitelist: profile_tasks
+      action_plugins: $PWD/action_plugins
+  inventory:
+    hosts:
+      molecule_hosts:
+        vars:
+      molecule_hosts_fedora:
+        vars:
+          ansible_python_interpreter: /usr/bin/python3
+verifier:
+  name: ansible

@@ -1,0 +1,11 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: yes
+  tasks:
+    - name: Check that local facts were setup
+      assert:
+        that:
+          - ansible_local.playbooks_info is defined
+          - ansible_local.playbooks_info.0.hello == "World"
