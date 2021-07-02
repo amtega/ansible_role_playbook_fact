@@ -3,11 +3,12 @@
 
 galaxy_info:
   role_name: playbook_fact
+  namespace: amtega
   author: Juan Antonio Valiño García
   description: Setup fact with info about the playbook that is running
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.9
+  min_ansible_version: 2.10
   platforms:
     - name: GenericLinux
       versions:
