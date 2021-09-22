@@ -2,42 +2,45 @@
 # Role tasks
 
 - block:
-    - name: Seach git repository
-      stat:
-        path: "{{ playbook_fact_git_search_path_item }}/.git"
-      register: playbook_fact_search_git_result
-      when: not playbook_fact_search_git_result.stat.exists | default(false)
-      loop: >-
-        {{ lookup("template", "git_search_paths.yml.j2") | from_yaml }}
-      loop_control:
-        loop_var: playbook_fact_git_search_path_item
-      delegate_to: localhost
-      become: no
+    - block:
+        - name: Seach git repository
+          stat:
+            path: "{{ playbook_fact_git_search_path_item }}/.git"
+          register: playbook_fact_search_git_result
+          when: not playbook_fact_search_git_result.stat.exists | default(false)
+          loop: >-
+            {{ lookup("template", "git_search_paths.yml.j2") | from_yaml }}
+          loop_control:
+            loop_var: playbook_fact_git_search_path_item
+          delegate_to: localhost
+          become: no
 
-    - name: Get git project name
-      command: "git config --get remote.{{ playbook_fact_remote_item }}.url"
-      args:
-        chdir: "{{ playbook_fact_git_project_path }}"
-        warn: no
-      register: playbook_fact_get_remote_result
-      changed_when: no
-      failed_when: no
-      loop: "{{ playbook_fact_remote_list }}"
-      loop_control:
-        loop_var: playbook_fact_remote_item
-      delegate_to: localhost
-      become: no
+        - name: Get git project name
+          command: "git config --get remote.{{ playbook_fact_remote_item }}.url"
+          args:
+            chdir: "{{ playbook_fact_git_project_path }}"
+            warn: no
+          register: playbook_fact_get_remote_result
+          changed_when: no
+          failed_when: no
+          loop: "{{ playbook_fact_remote_list }}"
+          loop_control:
+            loop_var: playbook_fact_remote_item
+          delegate_to: localhost
+          become: no
 
-    - name: Get git repository version
-      command: git describe --tags
-      args:
-        chdir: "{{ playbook_fact_git_project_path }}"
-        warn: no
-      register: playbook_fact_get_version_result
-      failed_when: no
-      changed_when: no
-      delegate_to: localhost
-      become: no
+        - name: Get git repository version
+          command: git describe --tags
+          args:
+            chdir: "{{ playbook_fact_git_project_path }}"
+            warn: no
+          register: playbook_fact_get_version_result
+          failed_when: no
+          changed_when: no
+          delegate_to: localhost
+          become: no
+      vars:
+        ansible_connection: local
 
     - name: Get playbook file
       playbook_fact_get_file:
