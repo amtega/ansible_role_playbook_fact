@@ -8,7 +8,7 @@ galaxy_info:
   description: Setup fact with info about the playbook that is running
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.10
+  min_ansible_version: "2.10"
   platforms:
     - name: GenericLinux
       versions:
