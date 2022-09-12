@@ -1,10 +1,11 @@
 ---
-# Role tasks
 
-- block:
-    - block:
+- name: Setup playbook fact
+  block:
+    - name: Gather playbook version
+      block:
         - name: Seach git repository
-          stat:
+          ansible.builtin.stat:
             path: "{{ playbook_fact_git_search_path_item }}/.git"
           register: playbook_fact_search_git_result
           when: not playbook_fact_search_git_result.stat.exists | default(false)
@@ -16,7 +17,8 @@
           become: no
 
         - name: Get git project name
-          command: "git config --get remote.{{ playbook_fact_remote_item }}.url"
+          ansible.builtin.command: >-
+            git config --get remote.{{ playbook_fact_remote_item }}.url
           args:
             chdir: "{{ playbook_fact_git_project_path }}"
             warn: no
@@ -29,8 +31,8 @@
           delegate_to: localhost
           become: no
 
-        - name: Get git repository version
-          command: git describe --tags
+        - name: Gather git repository version
+          ansible.builtin.command: git describe --tags
           args:
             chdir: "{{ playbook_fact_git_project_path }}"
             warn: no
@@ -47,24 +49,24 @@
       register: playbook_fact_get_file_result
 
     - name: Setup playbook fact
-      set_fact:
+      ansible.builtin.set_fact:
         playbook_info: >-
           {{ lookup("template", "playbook_info.fact.j2") | from_yaml }}
 
     - name: Create local facts directory
-      file:
+      ansible.builtin.file:
         path: "{{ playbook_fact_project_dir }}"
         state: directory
         mode: 0755
 
     - name: Configure main playbooks local fact
-      template:
+      ansible.builtin.template:
         src: playbooks_info.sh.fact.j2
         dest: "{{ playbook_fact_d_dir }}/playbooks_info.fact"
         mode: 0755
 
     - name: Configure playbook local fact
-      template:
+      ansible.builtin.template:
         src: playbook_info.fact.j2
         dest: "{{ playbook_fact_file_path }}"
         owner: root

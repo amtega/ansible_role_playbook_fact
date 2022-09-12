@@ -5,7 +5,7 @@
   gather_facts: yes
   tasks:
     - name: Check that local facts were setup
-      assert:
+      ansible.builtin.assert:
         that:
           - ansible_local.playbooks_info is defined
           - ansible_local.playbooks_info.0.hello == "World"
